@@ -13,7 +13,7 @@ const users: { [key: string]: string } = {};
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.set('view engine', 'ejs');
-app.set('views', './src/views');
+app.set('views', './views');
 
 app.get('/', (req: Request, res: Response) => {
   res.render('login');
