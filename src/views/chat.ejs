@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Socket.IO chat</title>
+    <style>
+      body {
+        margin: 0;
+        padding-bottom: 3rem;
+        font-family: Arial, sans-serif;
+        background-color: #222;
+        color: #fff;
+      }
+
+      #messages {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      #messages li {
+        padding: 10px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        background-color: #333;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      #messages li:nth-child(odd) {
+        background-color: #444;
+      }
+
+      #form {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0, 0, 0, 0.9);
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      #fileInput {
+        display: none;
+      }
+
+      #fileLabel {
+        margin-right: 1%;
+      }
+
+      label {
+        cursor: pointer;
+        background-color: #007bff;
+        color: #fff;
+        padding: 8px 16px;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+      }
+
+      label:hover {
+        background-color: #0056b3;
+      }
+
+      #input {
+        border: none;
+        padding: 8px;
+        border-radius: 20px;
+        flex-grow: 1;
+        margin-right: 10px;
+        outline: none;
+        background-color: #444;
+        color: #fff;
+      }
+
+      #form button {
+        background: #007bff;
+        border: none;
+        color: #fff;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      #form button:hover {
+        background: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <form id="form">
+      <input type="file" id="fileInput" accept="image/*" />
+      <label for="fileInput" id="fileLabel">Carregar Imagem</label>
+      <input id="input" autocomplete="off" />
+      <button>Enviar</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+
+      const form = document.getElementById("form");
+      const fileInput = document.getElementById("fileInput");
+      const input = document.getElementById("input");
+      const messages = document.getElementById("messages");
+      const label = document.querySelector("label[for='fileInput']");
+
+      fileInput.addEventListener("change", () => {
+        const file = fileInput.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+              label.textContent = "Imagem Carregada";
+            };
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const file = fileInput.files[0];
+
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+
+            img.onload = () => {
+              const MAX_WIDTH = 340;
+              const MAX_HEIGHT = 170;
+              let width = img.width;
+              let height = img.height;
+
+              if (width > MAX_WIDTH || height > MAX_HEIGHT) {
+                const ratio = Math.min(MAX_WIDTH / width, MAX_HEIGHT / height);
+                width *= ratio;
+                height *= ratio;
+              }
+
+              const canvas = document.createElement("canvas");
+              canvas.width = width;
+              canvas.height = height;
+              const ctx = canvas.getContext("2d");
+              ctx.drawImage(img, 0, 0, width, height);
+
+              const dataURL = canvas.toDataURL("image/jpeg");
+              socket.emit("image", { image: dataURL, imageName: file.name });
+              fileInput.value = "";
+              label.textContent = "Carregar Imagem";
+            };
+          };
+
+          reader.readAsDataURL(file);
+        } else if (input.value.trim() !== "" && fileInput.value.trim() === "") {
+          socket.emit("chat message", input.value);
+          input.value = "";
+        }
+      });
+
+      socket.on("chat message", ({ username, message }) => {
+        const item = document.createElement("li");
+        item.innerHTML = `<strong>${username}:</strong> ${message}`;
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+
+      socket.on("image", ({ username, image, imageName }) => {
+        const item = document.createElement("li");
+        const img = document.createElement("img");
+        item.innerHTML = `<strong>${username}:</strong>`;
+        img.src = image;
+        img.alt = imageName;
+        item.appendChild(img);
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+    </script>
+  </body>
+</html>
