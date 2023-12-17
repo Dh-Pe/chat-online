@@ -6,6 +6,7 @@ import { Server } from 'socket.io';
 const app = express();
 const server = createServer(app);
 const io = new Server(server);
+const port = process.env.PORT || 3000;
 
 const users: { [key: string]: string } = {};
 
@@ -46,6 +47,6 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(3000, () => {
+server.listen(port, () => {
   console.log('Server running at http://localhost:3000');
 });
