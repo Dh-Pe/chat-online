@@ -2,6 +2,7 @@ import cookieParser from 'cookie-parser';
 import express, { Request, Response } from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
+import cors from 'cors';
 
 const app = express();
 const server = createServer(app);
@@ -10,10 +11,11 @@ const port = process.env.PORT || 3000;
 
 const users: { [key: string]: string } = {};
 
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.set('view engine', 'ejs');
-app.set('views', './views');
+app.set('views', './src/views');
 
 app.get('/', (req: Request, res: Response) => {
   res.render('login');
