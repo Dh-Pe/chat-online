@@ -3,11 +3,11 @@ import express, { Request, Response } from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
+import serverless from 'serverless-http';
 
 const app = express();
 const server = createServer(app);
 const io = new Server(server);
-const port = process.env.PORT || 3000;
 
 const users: { [key: string]: string } = {};
 
@@ -49,6 +49,4 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(port, () => {
-  console.log('Server running at http://localhost:3000');
-});
+export const handler = serverless(app);

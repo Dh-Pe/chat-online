@@ -13,15 +13,16 @@
     "typescript": "^5.3.3"
   },
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/src/server.js",
-    "dev": "ts-node-dev --ignore-watch node_modules src/server.ts"
+    "dev": "ts-node-dev --ignore-watch node_modules src/index.ts",
+    "start": "./node_modules/.bin/netlify-lambda serve src",
+    "build": "./node_modules/.bin/netlify-lambda build src"
   },
   "dependencies": {
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
+    "serverless-http": "^3.2.0",
     "socket.io": "^4.7.2"
   }
 }

@@ -1,0 +1,20 @@
+[build]
+  command = "npm run build"
+
+[[plugins]]
+  package = "@netlify/plugin-functions-core"
+
+[functions]
+  directory = "src"
+  node_bundler = "esbuild"
+  external_node_modules = []
+
+[[redirects]]
+  from = "/chat"
+  to = "./netlify/functions/index/chat"
+  status = 200
+
+[[redirects]]
+  from = "/"
+  to = "/.netlify/functions/index"
+  status = 200
