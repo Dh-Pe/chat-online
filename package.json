@@ -14,9 +14,8 @@
   },
   "scripts": {
     "dev": "ts-node-dev --ignore-watch node_modules src/index.ts",
-    "start": "./node_modules/.bin/netlify-lambda serve dist/src",
-    "build": "./node_modules/.bin/netlify-lambda build dist/src",
-    "dev:build": "tsc"
+    "start": "node dist/src/index.js",
+    "build": "tsc"
   },
   "dependencies": {
     "cookie-parser": "^1.4.6",
