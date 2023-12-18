@@ -13,8 +13,8 @@
     "typescript": "^5.3.3"
   },
   "scripts": {
-    "dev": "ts-node-dev --ignore-watch node_modules src/index.ts",
-    "start": "node dist/src/index.js",
+    "dev": "ts-node-dev --ignore-watch node_modules src/server.ts",
+    "start": "node dist/src/server.js",
     "build": "tsc"
   },
   "dependencies": {
