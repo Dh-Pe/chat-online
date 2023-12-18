@@ -11,7 +11,7 @@ const io = new Server(server);
 
 const users: { [key: string]: string } = {};
 
-app.use(cors({ origin: ['https://chat-online-dh-pe.vercel.app', "https://chat-online-dh-pe.vercel.app/chat"] }));
+app.use(cors({ origin: ['*'] }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.set('view engine', 'ejs');
