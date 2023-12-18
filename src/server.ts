@@ -3,7 +3,6 @@ import express, { Request, Response } from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
-import path from 'path';
 
 const app = express();
 const server = createServer(app);
@@ -15,7 +14,7 @@ app.use(cors({ origin: ['*'] }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', './src/views');
 
 app.get('/', (req: Request, res: Response) => {
   res.render('login');
