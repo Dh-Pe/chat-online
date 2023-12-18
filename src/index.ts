@@ -3,7 +3,7 @@ import express, { Request, Response } from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
-import serverless from 'serverless-http';
+import path from 'path';
 
 const app = express();
 const server = createServer(app);
@@ -15,7 +15,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.set('view engine', 'ejs');
-app.set('views', './src/views');
+app.set('views', path.join(__dirname, 'views'));
 
 app.get('/', (req: Request, res: Response) => {
   res.render('login');
@@ -49,4 +49,4 @@ io.on('connection', (socket) => {
   });
 });
 
-export const handler = serverless(app);
+server.listen(process.env.PORT || 3000, () => console.log("Server is running"));
